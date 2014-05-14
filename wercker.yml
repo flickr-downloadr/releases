@@ -20,7 +20,13 @@ build:
               cp -r ./installer/* ../../${VERSION}
               cd ../..
               rm -rf ${VERSION}/**/.git* ${VERSION}/**/dependencies
-              rsync -e "ssh -o StrictHostKeyChecking=no" -Ravz ${VERSION}/* flickrdownloadr@frs.sourceforge.net:/home/frs/project/flickr-downloadr/
+              mkdir ~/.ssh
+              echo -n $SOURCE_FORGE_PRIVATE > ~/.ssh/id_rsa.pub
+              echo -n $SOURCE_FORGE_PUBLIC > ~/.ssh/id_rsa
+              chmod 600 ~/.ssh/id_rsa
+              chmod 644 ~/.ssh/id_rsa.pub
+              echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+              rsync -e ssh -Ravz ${VERSION}/* flickrdownloadr@frs.sourceforge.net:/home/frs/project/flickr-downloadr/
               echo "2. Delete previous installers on fd.github.io/master"
               echo "3. Add current installers to fd.github.io/master"
               echo "4. Update build.number file to the latest version on fd.github.io/master"
