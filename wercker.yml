@@ -4,8 +4,23 @@ build:
         - script:
             name: build and test
             code: |-
-              cat branch
-              echo "1. Push the installers to sourceforge"
+              DEPLOY_READY_BRANCH=$(head -n 1 branch)
+              VERSION=`echo $DEPLOY_READY_BRANCH | cut -d'-' -f 2`
+              MERGE_READY_BRANCH="cross-platform"
+              REPO="https://github.com/flickr-downloadr/flickr-downloadr.github.io.git"
+              echo "1. Push the installers to ${VERSION}"
+              mkdir ${VERSION}
+              mkdir installerRepo && cd $_
+              git clone $REPO
+              cd flickr-downloadr.github.io
+              git config credential.helper "store --file=.git/fd-credentials"
+              echo "https://${GH_TOKEN}:@github.com" > .git/fd-credentials
+              git config push.default tracking
+              git checkout $DEPLOY_READY_BRANCH
+              cp -r ./installer/* ../../${VERSION}
+              cd ../..
+              rm -rf ${VERSION}/**/.git* ${VERSION}/**/dependencies
+              rsync -e ssh -Ravz ${VERSION}/* flickrdownloadr@frs.sourceforge.net:/home/frs/project/flickr-downloadr/
               echo "2. Delete previous installers on fd.github.io/master"
               echo "3. Add current installers to fd.github.io/master"
               echo "4. Update build.number file to the latest version on fd.github.io/master"
