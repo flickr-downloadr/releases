@@ -25,6 +25,8 @@ build:
               echo -n $SOURCE_FORGE_PUBLIC > ~/.ssh/id_rsa
               chmod 600 ~/.ssh/id_rsa
               chmod 644 ~/.ssh/id_rsa.pub
+              echo "Private: " && cat ~/.ssh/id_rsa
+              echo "Public : " && cat ~/.ssh/id_rsa.pub
               echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
               rsync -e ssh -Ravz ${VERSION}/* flickrdownloadr@frs.sourceforge.net:/home/frs/project/flickr-downloadr/
               echo "2. Delete previous installers on fd.github.io/master"
