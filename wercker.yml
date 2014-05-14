@@ -20,6 +20,7 @@ build:
               cp -r ./installer/* ../../${VERSION}
               cd ../..
               rm -rf ${VERSION}/**/.git* ${VERSION}/**/dependencies
+              echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
               rsync -e ssh -Ravz ${VERSION}/* flickrdownloadr@frs.sourceforge.net:/home/frs/project/flickr-downloadr/
               echo "2. Delete previous installers on fd.github.io/master"
               echo "3. Add current installers to fd.github.io/master"
