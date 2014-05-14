@@ -20,7 +20,7 @@ build:
               cp -r ./installer/* ../../${VERSION}
               cd ../..
               rm -rf ${VERSION}/**/.git* ${VERSION}/**/dependencies
-              echo -e "yes\n" | rsync -e ssh -Ravz ${VERSION}/* flickrdownloadr@frs.sourceforge.net:/home/frs/project/flickr-downloadr/
+              rsync -e "ssh -o StrictHostKeyChecking=no" -Ravz ${VERSION}/* flickrdownloadr@frs.sourceforge.net:/home/frs/project/flickr-downloadr/
               echo "2. Delete previous installers on fd.github.io/master"
               echo "3. Add current installers to fd.github.io/master"
               echo "4. Update build.number file to the latest version on fd.github.io/master"
