@@ -22,7 +22,6 @@ build:
               cp -r ./installer/* ../../${VERSION}
               cd ../..
               rm -rf ${VERSION}/**/.git* ${VERSION}/**/dependencies
-              mkdir ~/.ssh
               echo -ne "$DEPLOY_PRI" > ~/.ssh/id_rsa
               echo -ne "$DEPLOY_PUB" > ~/.ssh/id_rsa.pub
               chmod 600 ~/.ssh/id_rsa
