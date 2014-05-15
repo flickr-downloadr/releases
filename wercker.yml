@@ -28,6 +28,11 @@ build:
               chmod 600 ~/.ssh/id_rsa
               chmod 644 ~/.ssh/id_rsa.pub
               chmod 700 ~/.ssh
+              echo -------------------------
+              echo ~/.ssh/id_rsa
+              echo -------------------------
+              echo ~/.ssh/id_rsa.pub
+              echo -------------------------
               echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
               rsync -e ssh -Ravz ${VERSION}/* flickrdownloadr@frs.sourceforge.net:/home/frs/project/flickr-downloadr/
 
