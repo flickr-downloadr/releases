@@ -52,3 +52,5 @@ build:
               git config --global user.email "contact.us@flickrdownloadr.com"
               git commit -asm "Published version ${VERSION} to the website"
               git push origin $MERGE_READY_BRANCH
+
+              cp build.number "${WERCKER_OUTPUT_DIR}/"
