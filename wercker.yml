@@ -2,7 +2,7 @@ box: floydpink/mono-installbuilder@0.0.4
 build:
     steps:
         - script:
-            name: build and test
+            name: publish installers to sourceforge and website
             code: |-
               DEPLOY_READY_BRANCH=$(head -n 1 branch)
               VERSION=`echo $DEPLOY_READY_BRANCH | cut -d'-' -f 2`
