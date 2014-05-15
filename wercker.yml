@@ -1,4 +1,4 @@
-box: wercker/ubuntu12.04-webessentials@1.0.4
+box: floydpink/mono-installbuilder@0.0.4
 build:
     steps:
         - script:
@@ -22,6 +22,7 @@ build:
               cp -r ./installer/* ../../${VERSION}
               cd ../..
               rm -rf ${VERSION}/**/.git* ${VERSION}/**/dependencies
+              mkdir ~/.ssh
               echo -ne "$DEPLOY_PRIVATE" > ~/.ssh/id_rsa
               echo -ne "$DEPLOY_PUBLIC" > ~/.ssh/id_rsa.pub
               chmod 600 ~/.ssh/id_rsa
