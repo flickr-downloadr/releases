@@ -53,4 +53,8 @@ build:
               git commit -asm "Published version ${VERSION} to the website"
               git push origin $MERGE_READY_BRANCH
 
+              echo "6. Delete the deploy branch on GitHub"
+              git push origin :$DEPLOY_READY_BRANCH
+
+              echo "7. Just keep the build.number file alone for the output directory"
               cp build.number "${WERCKER_OUTPUT_DIR}/"
