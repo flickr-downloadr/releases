@@ -10,7 +10,7 @@ build:
               MERGE_READY_BRANCH="cross-platform"
               REPO="https://github.com/flickr-downloadr/flickr-downloadr.github.io.git"
 
-              echo "1. Push the installers of ${VERSION} to Sourceforge and set them as default"
+              echo "1. Push the new installers of ${VERSION} to Sourceforge and set them as default"
               mkdir ${VERSION}
               mkdir installerRepo && cd $_
               git clone $REPO
@@ -28,13 +28,14 @@ build:
               chmod 600 ~/.ssh/id_rsa
               chmod 644 ~/.ssh/id_rsa.pub
               chmod 700 ~/.ssh
+              rm ${VERSION}/linux/flickrdownloadr-${PREVIOUS_VERSION}-linux-installer.run ${VERSION}/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-0.x86_64.rpm ${VERSION}/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-linux-x64-installer.run ${VERSION}/linux-x64/flickrdownloadr_${PREVIOUS_VERSION}-0_amd64.deb ${VERSION}/windows/flickrdownloadr-${PREVIOUS_VERSION}-windows-installer.exe
               echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
               rsync -e ssh -Ravz ${VERSION}/* flickrdownloadr@frs.sourceforge.net:/home/frs/project/flickr-downloadr/
               curl -H "Accept: application/json" -X PUT -d "default=windows&download_label=Install%20flickr%20downloadr%20(${VERSION})" -d "api_key=${SOURCEFORGE_API_KEY}" https://sourceforge.net/projects/flickr-downloadr/files/${VERSION}/windows/flickrdownloadr-${BARE_VERSION}-windows-installer.exe
               curl -H "Accept: application/json" -X PUT -d "default=mac&download_label=Install%20flickr%20downloadr%20(${VERSION})" -d "api_key=${SOURCEFORGE_API_KEY}" https://sourceforge.net/projects/flickr-downloadr/files/${VERSION}/osx/Install%20flickr%20downloadr.app.dmg
               curl -H "Accept: application/json" -X PUT -d "default=linux&download_label=Install%20flickr%20downloadr%20(${VERSION})" -d "api_key=${SOURCEFORGE_API_KEY}" https://sourceforge.net/projects/flickr-downloadr/files/${VERSION}/linux-x64/flickrdownloadr-${BARE_VERSION}-linux-x64-installer.run
 
-              echo "2. Delete previous installers on fd.github.io/master"
+              echo "2. Delete previous installers on fd.github.io/${MERGE_READY_BRANCH}"
               cd installerRepo/flickr-downloadr.github.io
               git checkout $MERGE_READY_BRANCH
               PREVIOUS_VERSION=$(head -n 1 build.number)
