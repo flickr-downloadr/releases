@@ -41,11 +41,11 @@ build:
               git checkout $MERGE_READY_BRANCH
               git rm --ignore-unmatch installer/linux/flickrdownloadr-${PREVIOUS_VERSION}-linux-installer.run installer/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-0.x86_64.rpm installer/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-linux-x64-installer.run installer/linux-x64/flickrdownloadr_${PREVIOUS_VERSION}-0_amd64.deb installer/osx/Install\ flickr\ downloadr.app.dmg installer/windows/flickrdownloadr-${PREVIOUS_VERSION}-windows-installer.exe
 
-              echo "3. Add current installers to fd.github.io/${MERGE_READY_BRANCH"
+              echo "3. Add current installers to fd.github.io/${MERGE_READY_BRANCH}"
               cp -r ../../${VERSION}/* ./installer
               git add installer/linux/flickrdownloadr-${BARE_VERSION}-linux-installer.run installer/linux-x64/flickrdownloadr-${BARE_VERSION}-0.x86_64.rpm installer/linux-x64/flickrdownloadr-${BARE_VERSION}-linux-x64-installer.run installer/linux-x64/flickrdownloadr_${BARE_VERSION}-0_amd64.deb installer/osx/Install\ flickr\ downloadr.app.dmg installer/windows/flickrdownloadr-${BARE_VERSION}-windows-installer.exe
 
-              echo "4. Update build.number file to the latest version on fd.github.io/${MERGE_READY_BRANCH"
+              echo "4. Update build.number file to the latest version on fd.github.io/${MERGE_READY_BRANCH}"
               echo -n $BARE_VERSION > build.number
 
               echo "5. Commit and push all changes to GitHub"
