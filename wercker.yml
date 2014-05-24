@@ -7,7 +7,7 @@ build:
               DEPLOY_READY_BRANCH=$(head -n 1 branch)
               VERSION=`echo $DEPLOY_READY_BRANCH | cut -d'-' -f 2`
               BARE_VERSION=`echo $VERSION | cut -c 2-`
-              MERGE_READY_BRANCH="cross-platform"
+              SOURCE_BRANCH="source"
               REPO="https://github.com/flickr-downloadr/flickr-downloadr.github.io.git"
 
               echo "1. Push the new installers of ${VERSION} to Sourceforge and set them as default"
@@ -36,23 +36,23 @@ build:
               curl -H "Accept: application/json" -X PUT -d "default=mac&download_label=Install%20flickr%20downloadr%20(${VERSION})" -d "api_key=${SOURCEFORGE_API_KEY}" https://sourceforge.net/projects/flickr-downloadr/files/${VERSION}/osx/flickrdownloadr-${BARE_VERSION}-osx-installer.app.dmg
               curl -H "Accept: application/json" -X PUT -d "default=linux&download_label=Install%20flickr%20downloadr%20(${VERSION})" -d "api_key=${SOURCEFORGE_API_KEY}" https://sourceforge.net/projects/flickr-downloadr/files/${VERSION}/linux-x64/flickrdownloadr-${BARE_VERSION}-linux-x64-installer.run
 
-              echo "2. Delete previous installers on fd.github.io/${MERGE_READY_BRANCH}"
+              echo "2. Delete previous installers on fd.github.io/${SOURCE_BRANCH}"
               cd installerRepo/flickr-downloadr.github.io
-              git checkout $MERGE_READY_BRANCH
+              git checkout $SOURCE_BRANCH
               git rm --ignore-unmatch app/installer/linux/flickrdownloadr-${PREVIOUS_VERSION}-linux-installer.run app/installer/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-0.x86_64.rpm app/installer/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-linux-x64-installer.run app/installer/linux-x64/flickrdownloadr_${PREVIOUS_VERSION}-0_amd64.deb app/installer/osx/flickrdownloadr-${PREVIOUS_VERSION}-osx-installer.app.dmg app/installer/windows/flickrdownloadr-${PREVIOUS_VERSION}-windows-installer.exe
 
-              echo "3. Add current installers to fd.github.io/${MERGE_READY_BRANCH}"
+              echo "3. Add current installers to fd.github.io/${SOURCE_BRANCH}"
               cp -r ../../${VERSION}/* ./app/installer
               git add app/installer/linux/flickrdownloadr-${BARE_VERSION}-linux-installer.run app/installer/linux-x64/flickrdownloadr-${BARE_VERSION}-0.x86_64.rpm app/installer/linux-x64/flickrdownloadr-${BARE_VERSION}-linux-x64-installer.run app/installer/linux-x64/flickrdownloadr_${BARE_VERSION}-0_amd64.deb app/installer/osx/flickrdownloadr-${BARE_VERSION}-osx-installer.app.dmg app/installer/windows/flickrdownloadr-${BARE_VERSION}-windows-installer.exe
 
-              echo "4. Update build.number file to the latest version on fd.github.io/${MERGE_READY_BRANCH}"
+              echo "4. Update build.number file to the latest version on fd.github.io/${SOURCE_BRANCH}"
               echo -n $BARE_VERSION > app/build.number
 
               echo "5. Commit and push all changes to GitHub"
               git config --global user.name "The CI Bot"
               git config --global user.email "contact.us@flickrdownloadr.com"
               git commit -asm "Published version ${VERSION} to the website"
-              git push origin $MERGE_READY_BRANCH
+              git push origin $SOURCE_BRANCH
 
               echo "6. Delete the deploy branch on GitHub"
               git push origin :$DEPLOY_READY_BRANCH
