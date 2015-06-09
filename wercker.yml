@@ -39,11 +39,11 @@ build:
               echo "2. Delete previous installers on fd.github.io/${SOURCE_BRANCH}"
               cd installerRepo/flickr-downloadr.github.io
               git checkout $SOURCE_BRANCH
-              git rm --ignore-unmatch app/installer/linux/flickrdownloadr-${PREVIOUS_VERSION}-linux-installer.run app/installer/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-0.x86_64.rpm app/installer/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-linux-x64-installer.run app/installer/linux-x64/flickrdownloadr_${PREVIOUS_VERSION}-0_amd64.deb 'app/installer/osx/Install flickr downloadr (v${PREVIOUS_VERSION}).dmg' app/installer/windows/flickrdownloadr-${PREVIOUS_VERSION}-windows-installer.exe
+              git rm --ignore-unmatch app/installer/linux/flickrdownloadr-${PREVIOUS_VERSION}-linux-installer.run app/installer/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-0.x86_64.rpm app/installer/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-linux-x64-installer.run app/installer/linux-x64/flickrdownloadr_${PREVIOUS_VERSION}-0_amd64.deb "app/installer/osx/Install flickr downloadr (v${PREVIOUS_VERSION}).dmg" app/installer/windows/flickrdownloadr-${PREVIOUS_VERSION}-windows-installer.exe
 
               echo "3. Add current installers to fd.github.io/${SOURCE_BRANCH}"
               cp -r ../../${VERSION}/* ./app/installer
-              git add app/installer/linux/flickrdownloadr-${BARE_VERSION}-linux-installer.run app/installer/linux-x64/flickrdownloadr-${BARE_VERSION}-0.x86_64.rpm app/installer/linux-x64/flickrdownloadr-${BARE_VERSION}-linux-x64-installer.run app/installer/linux-x64/flickrdownloadr_${BARE_VERSION}-0_amd64.deb 'app/installer/osx/Install flickr downloadr (v${BARE_VERSION}).dmg' app/installer/windows/flickrdownloadr-${BARE_VERSION}-windows-installer.exe
+              git add app/installer/linux/flickrdownloadr-${BARE_VERSION}-linux-installer.run app/installer/linux-x64/flickrdownloadr-${BARE_VERSION}-0.x86_64.rpm app/installer/linux-x64/flickrdownloadr-${BARE_VERSION}-linux-x64-installer.run app/installer/linux-x64/flickrdownloadr_${BARE_VERSION}-0_amd64.deb "app/installer/osx/Install flickr downloadr (v${BARE_VERSION}).dmg" app/installer/windows/flickrdownloadr-${BARE_VERSION}-windows-installer.exe
 
               echo "4. Update build.number file to the latest version on fd.github.io/${SOURCE_BRANCH}"
               echo -n $BARE_VERSION > app/build.number
