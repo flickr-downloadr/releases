@@ -29,7 +29,7 @@ build:
               chmod 600 ~/.ssh/id_rsa
               chmod 644 ~/.ssh/id_rsa.pub
               chmod 700 ~/.ssh
-              rm ${VERSION}/linux/flickrdownloadr-${PREVIOUS_VERSION}-linux-installer.run ${VERSION}/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-0.x86_64.rpm ${VERSION}/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-linux-x64-installer.run ${VERSION}/linux-x64/flickrdownloadr_${PREVIOUS_VERSION}-0_amd64.deb '${VERSION}/osx/Install flickr downloadr (v${PREVIOUS_VERSION}).dmg' ${VERSION}/windows/flickrdownloadr-${PREVIOUS_VERSION}-windows-installer.exe
+              rm -f ${VERSION}/linux/flickrdownloadr-${PREVIOUS_VERSION}-linux-installer.run ${VERSION}/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-0.x86_64.rpm ${VERSION}/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-linux-x64-installer.run ${VERSION}/linux-x64/flickrdownloadr_${PREVIOUS_VERSION}-0_amd64.deb '${VERSION}/osx/Install flickr downloadr (v${PREVIOUS_VERSION}).dmg' ${VERSION}/windows/flickrdownloadr-${PREVIOUS_VERSION}-windows-installer.exe
               echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
               rsync -e ssh -Ravz ${VERSION}/* flickrdownloadr@frs.sourceforge.net:/home/frs/project/flickr-downloadr/
               curl -H "Accept: application/json" -X PUT -d "default=windows&download_label=Install%20flickr%20downloadr%20(${VERSION})" -d "api_key=${SOURCEFORGE_API_KEY}" https://sourceforge.net/projects/flickr-downloadr/files/${VERSION}/windows/flickrdownloadr-${BARE_VERSION}-windows-installer.exe
