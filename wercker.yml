@@ -5,8 +5,8 @@ build:
             name: publish installers to sourceforge and website
             code: |-
               DEPLOY_READY_BRANCH=$(head -n 1 branch)
-              VERSION=`echo $DEPLOY_READY_BRANCH | cut -d'-' -f 2`
-              BARE_VERSION=`echo $VERSION | cut -c 2-`
+              VERSION=`echo ${DEPLOY_READY_BRANCH} | cut -d'-' -f 2`
+              BARE_VERSION=`echo ${VERSION} | cut -c 2-`
               SOURCE_BRANCH="source"
               REPO="https://github.com/flickr-downloadr/flickr-downloadr.github.io.git"
 
@@ -33,7 +33,7 @@ build:
               echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
               rsync -e ssh -Ravz ${VERSION}/* flickrdownloadr@frs.sourceforge.net:/home/frs/project/flickr-downloadr/
               curl -H "Accept: application/json" -X PUT -d "default=windows&download_label=Install%20flickr%20downloadr%20(${VERSION})" -d "api_key=${SOURCEFORGE_API_KEY}" https://sourceforge.net/projects/flickr-downloadr/files/${VERSION}/windows/flickrdownloadr-${BARE_VERSION}-windows-installer.exe
-              curl -H "Accept: application/json" -X PUT -d "default=mac&download_label=Install%20flickr%20downloadr%20(${VERSION})" -d "api_key=${SOURCEFORGE_API_KEY}" https://sourceforge.net/projects/flickr-downloadr/files/${VERSION}/osx/Install%20flickr%20downloadr%20(v${BARE_VERSION}).dmg
+              curl -H "Accept: application/json" -X PUT -d "default=mac&download_label=Install%20flickr%20downloadr%20(${VERSION})" -d "api_key=${SOURCEFORGE_API_KEY}" "https://sourceforge.net/projects/flickr-downloadr/files/${VERSION}/osx/Install%20flickr%20downloadr%20(v${BARE_VERSION}).dmg"
               curl -H "Accept: application/json" -X PUT -d "default=linux&download_label=Install%20flickr%20downloadr%20(${VERSION})" -d "api_key=${SOURCEFORGE_API_KEY}" https://sourceforge.net/projects/flickr-downloadr/files/${VERSION}/linux-x64/flickrdownloadr-${BARE_VERSION}-linux-x64-installer.run
 
               echo "2. Delete previous installers on fd.github.io/${SOURCE_BRANCH}"
