@@ -2,39 +2,52 @@ box: floydpink/mono-installbuilder@0.0.4
 build:
     steps:
         - script:
-            name: publish installers to sourceforge and website
+            name: create a release, tag and push the installers to the website
             code: |-
               DEPLOY_READY_BRANCH=$(head -n 1 branch)
               VERSION=`echo ${DEPLOY_READY_BRANCH} | cut -d'-' -f 2`
               BARE_VERSION=`echo ${VERSION} | cut -c 2-`
               SOURCE_BRANCH="source"
-              REPO="https://github.com/flickr-downloadr/flickr-downloadr.github.io.git"
+              WEBSITE_REPO="https://github.com/flickr-downloadr/flickr-downloadr.github.io.git"
 
-              echo "1. Push the new installers of ${VERSION} to Sourceforge and set them as default"
+              echo "1. Create a new release on GitHub using the tag created from the Mac CI build (Travis CI)"
+              echo "1.1 Downloading jq"
+              wget "http://stedolan.github.io/jq/download/linux64/jq"
+              chmod +x jq
+              echo "1.2 Cloning the website repo"
               mkdir ${VERSION}
               mkdir installerRepo && cd $_
-              git clone $REPO
+              git clone $WEBSITE_REPO
               cd flickr-downloadr.github.io
               git config credential.helper "store --file=.git/fd-credentials"
               echo "https://${GH_TOKEN}:@github.com" > .git/fd-credentials
               git config push.default tracking
               git checkout $DEPLOY_READY_BRANCH
               PREVIOUS_VERSION=$(head -n 1 app/build.number)
+              echo "1.3 Copying the new installers to a separate directory"
               cp -r ./app/installer/* ../../${VERSION}
               cd ../..
+              echo "1.4 Deleting the git directory, dependecies and previous version installers"
               rm -rf ${VERSION}/**/.git* ${VERSION}/**/dependencies
-              mkdir ~/.ssh
-              echo -ne "$DEPLOY_PRIVATE" > ~/.ssh/id_rsa
-              echo -ne "$DEPLOY_PUBLIC" > ~/.ssh/id_rsa.pub
-              chmod 600 ~/.ssh/id_rsa
-              chmod 644 ~/.ssh/id_rsa.pub
-              chmod 700 ~/.ssh
-              rm -f ${VERSION}/linux/flickrdownloadr-${PREVIOUS_VERSION}-linux-installer.run ${VERSION}/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-0.x86_64.rpm ${VERSION}/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-linux-x64-installer.run ${VERSION}/linux-x64/flickrdownloadr_${PREVIOUS_VERSION}-0_amd64.deb '${VERSION}/osx/Install flickr downloadr (v${PREVIOUS_VERSION}).dmg' ${VERSION}/windows/flickrdownloadr-${PREVIOUS_VERSION}-windows-installer.exe
-              echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-              rsync -e ssh -Ravz ${VERSION}/* flickrdownloadr@frs.sourceforge.net:/home/frs/project/flickr-downloadr/
-              curl -H "Accept: application/json" -X PUT -d "default=windows&download_label=Install%20flickr%20downloadr%20(${VERSION})" -d "api_key=${SOURCEFORGE_API_KEY}" https://sourceforge.net/projects/flickr-downloadr/files/${VERSION}/windows/flickrdownloadr-${BARE_VERSION}-windows-installer.exe
-              curl -H "Accept: application/json" -X PUT -d "default=mac&download_label=Install%20flickr%20downloadr%20(${VERSION})" -d "api_key=${SOURCEFORGE_API_KEY}" "https://sourceforge.net/projects/flickr-downloadr/files/${VERSION}/osx/Install%20flickr%20downloadr%20(v${BARE_VERSION}).dmg"
-              curl -H "Accept: application/json" -X PUT -d "default=linux&download_label=Install%20flickr%20downloadr%20(${VERSION})" -d "api_key=${SOURCEFORGE_API_KEY}" https://sourceforge.net/projects/flickr-downloadr/files/${VERSION}/linux-x64/flickrdownloadr-${BARE_VERSION}-linux-x64-installer.run
+              rm ${VERSION}/linux/flickrdownloadr-${PREVIOUS_VERSION}-linux-installer.run ${VERSION}/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-0.x86_64.rpm ${VERSION}/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-linux-x64-installer.run ${VERSION}/linux-x64/flickrdownloadr_${PREVIOUS_VERSION}-0_amd64.deb '${VERSION}/osx/Install flickr downloadr (v${PREVIOUS_VERSION}).dmg' ${VERSION}/windows/flickrdownloadr-${PREVIOUS_VERSION}-windows-installer.exe
+              cd ${VERSION}
+              echo "1.5 Zipping the release assets"
+              zip -r linux-x64.zip ./linux-x64
+              zip -r linux.zip ./linux
+              zip -r osx.zip ./osx
+              zip -r windows.zip ./windows
+              echo "1.6 Updating the release"
+              VERSION_TAG_ID=$(curl --user ${GH_TOKEN}:x-oauth-basic https://api.github.com/repos/flickr-downloadr/flickr-downloadr-gtk/releases/tags/$VERSION | ./jq -r '.id')
+              EDIT_RELEASE_JSON_PAYLOAD=$(printf '{ "name": "%s", "draft": false, "prerelease": false }' $VERSION)
+              curl --user ${GH_TOKEN}:x-oauth-basic --request PATCH --data "${EDIT_RELEASE_JSON_PAYLOAD}" https://api.github.com/repos/flickr-downloadr/flickr-downloadr-gtk/releases/releases/${VERSION_TAG_ID}
+              echo "1.7 Uploading the release assets"
+              UPLOAD_URL=$(curl --user ${GH_TOKEN}:x-oauth-basic https://api.github.com/repos/flickr-downloadr/flickr-downloadr-gtk/releases/$VERSION_TAG_ID | ./jq -r '.upload_url')
+              if [[ ${UPLOAD_URL} != */assets{?name} ]]; then exit 100; fi
+              UPLOAD_URL_WITH_NAME=$(echo $UPLOAD_URL | sed 's/{?name}$/\?name=/')
+              curl --request POST --user ${GH_TOKEN}:x-oauth-basic --header "Content-Type:application/zip" --data-binary @linux-x64.zip "${UPLOAD_URL_WITH_NAME}linux-x64.zip"
+              curl --request POST --user ${GH_TOKEN}:x-oauth-basic --header "Content-Type:application/zip" --data-binary @linux.zip "${UPLOAD_URL_WITH_NAME}linux.zip"
+              curl --request POST --user ${GH_TOKEN}:x-oauth-basic --header "Content-Type:application/zip" --data-binary @osx.zip "${UPLOAD_URL_WITH_NAME}osx.zip"
+              curl --request POST --user ${GH_TOKEN}:x-oauth-basic --header "Content-Type:application/zip" --data-binary @windows.zip "${UPLOAD_URL_WITH_NAME}windows.zip"
 
               echo "2. Delete previous installers on fd.github.io/${SOURCE_BRANCH}"
               cd installerRepo/flickr-downloadr.github.io
