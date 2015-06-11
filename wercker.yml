@@ -10,6 +10,10 @@ build:
               SOURCE_BRANCH="source"
               WEBSITE_REPO="https://github.com/flickr-downloadr/flickr-downloadr.github.io.git"
 
+              echo "0. Install zip and unzip"
+              sudo apt-get update
+              sudo apt-get install zip unzip -y
+
               echo "1. Create a new release on GitHub using the tag created from the Mac CI build (Travis CI)"
               echo "1.1 Downloading jq"
               wget "http://stedolan.github.io/jq/download/linux64/jq"
