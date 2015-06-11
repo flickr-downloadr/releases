@@ -29,7 +29,7 @@ build:
               cd ../..
               echo "1.4 Deleting the git directory, dependecies and previous version installers"
               rm -rf ${VERSION}/**/.git* ${VERSION}/**/dependencies
-              rm ${VERSION}/linux/flickrdownloadr-${PREVIOUS_VERSION}-linux-installer.run ${VERSION}/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-0.x86_64.rpm ${VERSION}/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-linux-x64-installer.run ${VERSION}/linux-x64/flickrdownloadr_${PREVIOUS_VERSION}-0_amd64.deb '${VERSION}/osx/Install flickr downloadr (v${PREVIOUS_VERSION}).dmg' ${VERSION}/windows/flickrdownloadr-${PREVIOUS_VERSION}-windows-installer.exe
+              rm ${VERSION}/linux/flickrdownloadr-${PREVIOUS_VERSION}-linux-installer.run ${VERSION}/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-0.x86_64.rpm ${VERSION}/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-linux-x64-installer.run ${VERSION}/linux-x64/flickrdownloadr_${PREVIOUS_VERSION}-0_amd64.deb "${VERSION}/osx/Install flickr downloadr (v${PREVIOUS_VERSION}).dmg" ${VERSION}/windows/flickrdownloadr-${PREVIOUS_VERSION}-windows-installer.exe
               cd ${VERSION}
               echo "1.5 Zipping the release assets"
               zip -r linux-x64.zip ./linux-x64
