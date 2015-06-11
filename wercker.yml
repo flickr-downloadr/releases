@@ -50,7 +50,7 @@ build:
               curl --request POST --user ${GH_TOKEN}:x-oauth-basic --header "Content-Type:application/zip" --data-binary @windows.zip "${UPLOAD_URL_WITH_NAME}windows.zip"
 
               echo "2. Delete previous installers on fd.github.io/${SOURCE_BRANCH}"
-              cd installerRepo/flickr-downloadr.github.io
+              cd ../installerRepo/flickr-downloadr.github.io
               git checkout $SOURCE_BRANCH
               git rm --ignore-unmatch app/installer/linux/flickrdownloadr-${PREVIOUS_VERSION}-linux-installer.run app/installer/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-0.x86_64.rpm app/installer/linux-x64/flickrdownloadr-${PREVIOUS_VERSION}-linux-x64-installer.run app/installer/linux-x64/flickrdownloadr_${PREVIOUS_VERSION}-0_amd64.deb "app/installer/osx/Install flickr downloadr (v${PREVIOUS_VERSION}).dmg" app/installer/windows/flickrdownloadr-${PREVIOUS_VERSION}-windows-installer.exe
 
