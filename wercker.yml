@@ -40,14 +40,11 @@ build:
               zip -r linux.zip ./linux
               zip -r osx.zip ./osx
               zip -r windows.zip ./windows
-              echo "1.6 Updating the release"
-              VERSION_TAG_ID=$(curl --user ${GH_TOKEN}:x-oauth-basic https://api.github.com/repos/flickr-downloadr/flickr-downloadr-gtk/releases/tags/$VERSION | ../jq -r '.id')
-              echo "VERSION_TAG_ID: ${VERSION_TAG_ID}"
-              EDIT_RELEASE_JSON_PAYLOAD=$(printf '{ "name": "%s", "draft": false, "prerelease": false }' $VERSION)
-              echo "EDIT_RELEASE_JSON_PAYLOAD: ${EDIT_RELEASE_JSON_PAYLOAD}"
-              curl --user ${GH_TOKEN}:x-oauth-basic --request PATCH --data "${EDIT_RELEASE_JSON_PAYLOAD}" https://api.github.com/repos/flickr-downloadr/flickr-downloadr-gtk/releases/releases/${VERSION_TAG_ID}
+              echo "1.6 Creating the release"
+              RELEASE_JSON_PAYLOAD=$(printf '{ "tag_name": "%s", "name": "%s" }' $VERSION $VERSION)
+              echo "RELEASE_JSON_PAYLOAD: ${RELEASE_JSON_PAYLOAD}"
               echo "1.7 Uploading the release assets"
-              UPLOAD_URL=$(curl --user ${GH_TOKEN}:x-oauth-basic https://api.github.com/repos/flickr-downloadr/flickr-downloadr-gtk/releases/$VERSION_TAG_ID | ../jq -r '.upload_url')
+              UPLOAD_URL=$(curl --user ${GH_TOKEN}:x-oauth-basic --request POST --data "${RELEASE_JSON_PAYLOAD}" https://api.github.com/repos/flickr-downloadr/flickr-downloadr-gtk/releases | ../jq -r '.upload_url')
               echo "UPLOAD_URL: ${UPLOAD_URL}"
               if [[ ${UPLOAD_URL} != */assets{?name} ]]; then exit 100; fi
               UPLOAD_URL_WITH_NAME=$(echo $UPLOAD_URL | sed 's/{?name}$/\?name=/')
