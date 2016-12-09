@@ -46,8 +46,8 @@ build:
               echo "1.7 Uploading the release assets"
               UPLOAD_URL=$(curl --user ${GH_TOKEN}:x-oauth-basic --request POST --data "${RELEASE_JSON_PAYLOAD}" https://api.github.com/repos/flickr-downloadr/flickr-downloadr-gtk/releases | ../jq -r '.upload_url')
               echo "UPLOAD_URL: ${UPLOAD_URL}"
-              if [[ ${UPLOAD_URL} != */assets{?name} ]]; then exit 100; fi
-              UPLOAD_URL_WITH_NAME=$(echo $UPLOAD_URL | sed 's/{?name}$/\?name=/')
+              if [[ ${UPLOAD_URL} != */assets{?name,label} ]]; then exit 100; fi
+              UPLOAD_URL_WITH_NAME=$(echo $UPLOAD_URL | sed 's/{?name,label}$/\?name=/')
               curl --request POST --user ${GH_TOKEN}:x-oauth-basic --header "Content-Type:application/zip" --data-binary @linux-x64.zip "${UPLOAD_URL_WITH_NAME}linux-x64.zip"
               curl --request POST --user ${GH_TOKEN}:x-oauth-basic --header "Content-Type:application/zip" --data-binary @linux.zip "${UPLOAD_URL_WITH_NAME}linux.zip"
               curl --request POST --user ${GH_TOKEN}:x-oauth-basic --header "Content-Type:application/zip" --data-binary @osx.zip "${UPLOAD_URL_WITH_NAME}osx.zip"
